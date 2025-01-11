@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
+import iconsMap from '@/constants/icons';
+
+type IconName = keyof typeof iconsMap extends `/${string}/icons/${infer Name}.svg` ? Name : never;
 
 const props = defineProps<{
-    icon: string
+    icon: IconName
 }>()
-const iconComponent = defineAsyncComponent(
-    () => import(`icons/${props.icon}.svg`)
-)
+
+const iconComponent = computed(() => {
+    for (const key in iconsMap) {
+        if(key.split('/').slice(-1)[0] === (props.icon + '.svg')) {
+            return iconsMap[key]
+        }
+    }
+    return null
+})
 </script>
 
 <template>
